@@ -3,9 +3,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
+
 class AuthProvider with ChangeNotifier {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   GoogleSignInAccount gUser;
+  var client;
 
   Future<void> silentSignin() async {
     try {
@@ -22,37 +25,48 @@ class AuthProvider with ChangeNotifier {
   Future<GoogleSignInAccount> signInWithGoogle() async {
     // FirebaseAuth auth = FirebaseAuth.instance;
     // User user;
-    await Firebase.initializeApp();
     final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    try {
+      await Firebase.initializeApp();
 
-    // if (googleSignInAccount != null) {
-    //   final GoogleSignInAuthentication googleSignInAuthentication =
-    //       await googleSignInAccount.authentication;
+      await googleSignIn.requestScopes([
+        'https://www.googleapis.com/auth/fitness.activity.read',
+        'https://www.googleapis.com/auth/fitness.body.read',
+      ]);
+    } catch (e) {
+      throw e;
+    }
 
-    //   final AuthCredential credential = GoogleAuthProvider.credential(
-    //     accessToken: googleSignInAuthentication.accessToken,
-    //     idToken: googleSignInAuthentication.idToken,
-    //   );
+    if (googleSignInAccount != null) {
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount.authentication;
 
-    //   try {
-    //     final UserCredential userCredential =
-    //         await auth.signInWithCredential(credential);
+      client = await googleSignIn.authenticatedClient();
 
-    //     user = userCredential.user;
+      // sessions.session.forEach((element) {
+      //   print("name " + element.activeTimeMillis);
+      // });
 
-    //   } on FirebaseAuthException catch (e) {
-    //     if (e.code == 'account-exists-with-different-credential') {
-    //       throw e;
-    //     } else if (e.code == 'invalid-credential') {
-    //       throw e;
-    //     }
-    //   } catch (e) {
-    //     throw e;
-    //   }
-    // }
-    notifyListeners();
-    gUser = googleSignInAccount;
-    return gUser;
+      //   try {
+      //     final UserCredential userCredential =
+      //         await auth.signInWithCredential(credential);
+
+      //     user = userCredential.user;
+
+      //   } on FirebaseAuthException catch (e) {
+      //     if (e.code == 'account-exists-with-different-credential') {
+      //       throw e;
+      //     } else if (e.code == 'invalid-credential') {
+      //       throw e;
+      //     }
+      //   } catch (e) {
+      //     throw e;
+      //   }
+      // }
+      notifyListeners();
+      gUser = googleSignInAccount;
+      return gUser;
+    }
   }
 
   Future<void> checkExist() async {

@@ -20,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
         final auth = Provider.of<AuthProvider>(context, listen: false);
         await auth.silentSignin();
         if (auth.gUser != null) {
-          Navigator.of(context).pushReplacementNamed('home-screen');
+          Navigator.of(context).pushReplacementNamed('developer-screen');
         }
         setState(() {
           _isLoading = false;
@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         await Provider.of<AuthProvider>(context, listen: false)
                             .checkExist();
                         Navigator.of(context)
-                            .pushReplacementNamed('home-screen');
+                            .pushReplacementNamed('developer-screen');
                       }
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

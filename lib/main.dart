@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym/providers/auth-provider.dart';
+import 'package:gym/screens/developer.dart';
 import 'package:gym/screens/exercises-screen.dart';
 import 'package:gym/screens/home_screen.dart';
 import 'package:gym/screens/login-screen.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
           'new-exercise-screen': (ctx) => NewExerciseScreen(),
           'home-screen': (ctx) => HomeScreen(),
           'login': (ctx) => LoginScreen(),
+          'developer-screen': (ctx) => Developer(),
         },
       ),
     );
